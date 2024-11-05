@@ -13,5 +13,5 @@ npm run dev
 
 ## Useful links
 
-[Todo list](./todo.md)
-[Backlog](./roadmap.md)
+- [Todo list](./todo.md)
+- [Backlog](./roadmap.md)
