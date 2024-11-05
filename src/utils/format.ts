@@ -13,9 +13,15 @@ export const getCleanValue = (rawValue: string) => {
   return newValue
 }
 
-export const getValueConversion = (value: string, currentRate: number) => {
+export const getValueConversion = (
+  value: string,
+  currentRate: number,
+  isUsdToEur: boolean
+) => {
   const cleanValue = parseFloat(getCleanValue(value)) || 0
-  const newValue = currentRate * cleanValue
+  const newValue = isUsdToEur
+    ? cleanValue / currentRate
+    : currentRate * cleanValue
   const newValuePrecision = newValue.toFixed(2)
   return newValuePrecision
 }
