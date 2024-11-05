@@ -24,9 +24,26 @@ export const getValueConversion = (
   const cleanValue = parseFloat(getCleanValue(value)) || 0
   const cleanFixedRate =
     (fixedRate && parseFloat(getCleanValue(fixedRate))) || 0
+
   const rateToUse =
-    hasFixedRate && !isFixedRateOverMaxDiff ? cleanFixedRate : currentRate
+    hasFixedRate &&
+    !isFixedRateOverMaxDiff &&
+    cleanFixedRate &&
+    !isNaN(cleanFixedRate)
+      ? cleanFixedRate
+      : currentRate
+
   const newValue = isUsdToEur ? cleanValue / rateToUse : rateToUse * cleanValue
   const newValuePrecision = newValue.toFixed(2)
   return newValuePrecision
+}
+
+export const getNewRate = (prev: number, addOrSubValue: number) => {
+  const newValue = prev + addOrSubValue
+
+  // Avoid negative values
+  if (newValue < 0) {
+    return 0.0
+  }
+  return parseFloat((prev + addOrSubValue).toFixed(2))
 }
