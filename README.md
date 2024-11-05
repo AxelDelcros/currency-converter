@@ -16,7 +16,7 @@ npm run dev
 ```sh
 
   npm install # In case you didn't installed the project before tryning to test it
-  npm run test -- --coverage
+  npm run coverage
 ```
 
 ## Useful links
