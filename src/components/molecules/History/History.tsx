@@ -4,6 +4,7 @@ import {
   faArrowTrendDown,
   faArrowTrendUp,
 } from "@fortawesome/free-solid-svg-icons"
+
 import Container from "../../atoms/Container/Container"
 
 const History = ({ values = [], className }: HistoryProps) => {

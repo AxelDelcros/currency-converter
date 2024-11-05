@@ -10,7 +10,7 @@ import { getCleanValue, getValueConversion } from "../../../utils/format"
 
 import { CurrencyInputProps } from "./CurrencyInput.types"
 
-const MAX_PERCENTAGE_RATE_DIFF = 0.2
+const MAX_PERCENTAGE_RATE_DIFF = 0.02
 
 const CurrencyInput = ({
   currentRate,
