@@ -1,37 +1,13 @@
-import { useCallback, useEffect, useState } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons"
+import { useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 
-import Container from "../../atoms/Container/Container"
-import Switch from "../../atoms/Switch/Switch"
-import { getCleanValue, getValueConversion } from "../../../utils/format"
+import History from "../../molecules/History/History"
+import CurrencyInput from "../../molecules/CurrencyInput/CurrencyInput"
+import { HistoryValue } from "../../molecules/History/History.types"
 
 const Converter = () => {
-  const [isUsdToEur, setIsUsdToEur] = useState(false)
   const [currentRate, setCurrentRate] = useState(1.1)
-  const [currentValue, setCurrentValue] = useState("0.00")
-  const [convertedValue, setConvertedValue] = useState("0.00")
-
-  const handleChangeValue = useCallback(
-    (value: string) => {
-      const newValuePrecision = getValueConversion(value, currentRate)
-      setConvertedValue(newValuePrecision)
-    },
-
-    [currentRate]
-  )
-
-  const handleChangeCurrentValue = (newCurrentValue: string) => {
-    if (newCurrentValue === "") {
-      setCurrentValue("")
-      setConvertedValue("0")
-      return
-    }
-    const newCurrentValueCleaned =
-      getCleanValue(newCurrentValue)?.toString() || ""
-    setCurrentValue(newCurrentValueCleaned)
-    handleChangeValue(newCurrentValueCleaned)
-  }
+  const [historyValues, setHistoryValues] = useState<HistoryValue[]>([])
 
   const getNewRate = (prev: number, addOrSubValue: number) => {
     const newValue = prev + addOrSubValue
@@ -43,12 +19,31 @@ const Converter = () => {
     return parseFloat((prev + addOrSubValue).toFixed(2))
   }
 
-  const handleSwitchUsdToEur = (
-    newIsUsdToEur: boolean,
-    newInputValue: string
+  const handleSaveConversion = (
+    value: string,
+    conversion: string,
+    isUsdToEur: boolean,
+    fixedRate?: number
   ) => {
-    setCurrentValue(newInputValue)
-    setIsUsdToEur(newIsUsdToEur)
+    const getFloatConversion = parseFloat(conversion)
+    const getFloatValue = parseFloat(value)
+    if (isNaN(getFloatConversion) || isNaN(getFloatValue)) {
+      return
+    }
+
+    setHistoryValues((prev) => {
+      const newValues = [
+        {
+          id: uuidv4(),
+          realRate: currentRate,
+          valueEur: isUsdToEur ? getFloatConversion : getFloatValue,
+          valueUsd: isUsdToEur ? getFloatValue : getFloatConversion,
+          fixedRate,
+        },
+        ...prev,
+      ].filter((_, index) => index < 5)
+      return newValues
+    })
   }
 
   useEffect(() => {
@@ -63,55 +58,14 @@ const Converter = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (currentValue) {
-      const newConversion = getValueConversion(currentValue, currentRate)
-      setConvertedValue(newConversion)
-    } else {
-      setConvertedValue("0.00")
-    }
-  }, [currentValue, currentRate])
-
   return (
     <div className="flex gap-6 text-white justify-center font-light">
-      <Container label="Currency converter" className={"flex-1"}>
-        <div className="flex gap-2 flex-col">
-          <div className="flex gap-2">
-            <h3>Current real rate:</h3>
-            {currentRate}
-          </div>
-          <label className="flex gap-4 items-center">
-            <div className="flex flex-1 gap-2 items-center">
-              <input
-                className={"text-black px-3 py-1"}
-                value={currentValue}
-                onChange={(e) => handleChangeCurrentValue(e.target.value)}
-              />
-              <div>{isUsdToEur ? "USD" : "EUR"}</div>
-            </div>
-            <div className="flex gap-3 items-center font-semibold">
-              <FontAwesomeIcon icon={faArrowRightLong} />
-            </div>
-            <div className="flex-1">
-              <span>
-                {convertedValue.replace(".", ",")}{" "}
-                <span>{isUsdToEur ? "EUR" : "USD"}</span>
-              </span>
-            </div>
-          </label>
-          <div className="text-center mt-4">
-            <Switch
-              checked={isUsdToEur}
-              setActive={(newIsUsdToEur) =>
-                handleSwitchUsdToEur(newIsUsdToEur, convertedValue)
-              }
-            />
-          </div>
-        </div>
-      </Container>
-      <Container label="History" className={"flex-2"}>
-        Content
-      </Container>
+      <CurrencyInput
+        className="flex-1"
+        currentRate={currentRate}
+        handleSaveConversion={handleSaveConversion}
+      />
+      <History className="flex-2" values={historyValues} />
     </div>
   )
 }
