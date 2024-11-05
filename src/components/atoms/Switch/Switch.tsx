@@ -26,6 +26,7 @@ const Switch = ({ checked, setActive }: SwitchProps) => {
               "dot absolute top-1 bg-white w-6 h-6 rounded-full transition-all",
               !checked ? "left-1" : "left-[calc(100%-28px)]"
             )}
+            role="presentation"
           />
         </div>
         <span className="block absolute -right-full font-semibold">$ to €</span>

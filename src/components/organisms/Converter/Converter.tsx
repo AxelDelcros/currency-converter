@@ -4,20 +4,11 @@ import { v4 as uuidv4 } from "uuid"
 import History from "../../molecules/History/History"
 import CurrencyInput from "../../molecules/CurrencyInput/CurrencyInput"
 import { HistoryValue } from "../../molecules/History/History.types"
+import { getNewRate } from "../../../utils/format"
 
 const Converter = () => {
   const [currentRate, setCurrentRate] = useState(1.1)
   const [historyValues, setHistoryValues] = useState<HistoryValue[]>([])
-
-  const getNewRate = (prev: number, addOrSubValue: number) => {
-    const newValue = prev + addOrSubValue
-
-    // Avoid negative values
-    if (newValue < 0) {
-      return 0.0
-    }
-    return parseFloat((prev + addOrSubValue).toFixed(2))
-  }
 
   const handleSaveConversion = (
     value: string,
