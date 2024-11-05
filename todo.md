@@ -17,4 +17,4 @@
 
 ## Tests
 
-- [ ] Add unit testings
+- [x] Add unit testings
