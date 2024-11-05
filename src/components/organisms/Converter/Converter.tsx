@@ -59,7 +59,7 @@ const Converter = () => {
   }, [])
 
   return (
-    <div className="flex gap-6 text-white justify-center font-light">
+    <div className="flex flex-col md:flex-row gap-6 text-white justify-center font-light">
       <CurrencyInput
         className="flex-1"
         currentRate={currentRate}
