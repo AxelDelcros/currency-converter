@@ -1,11 +1,13 @@
+import { useCallback, useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons"
 
 import Container from "../../atoms/Container/Container"
-import { useCallback, useEffect, useState } from "react"
+import Switch from "../../atoms/Switch/Switch"
 import { getCleanValue, getValueConversion } from "../../../utils/format"
 
 const Converter = () => {
+  const [isUsdToEur, setIsUsdToEur] = useState(false)
   const [currentRate, setCurrentRate] = useState(1.1)
   const [currentValue, setCurrentValue] = useState("0.00")
   const [convertedValue, setConvertedValue] = useState("0.00")
@@ -41,6 +43,14 @@ const Converter = () => {
     return parseFloat((prev + addOrSubValue).toFixed(2))
   }
 
+  const handleSwitchUsdToEur = (
+    newIsUsdToEur: boolean,
+    newInputValue: string
+  ) => {
+    setCurrentValue(newInputValue)
+    setIsUsdToEur(newIsUsdToEur)
+  }
+
   useEffect(() => {
     const handler = setInterval(() => {
       const addOrSub = Math.floor(Math.random() * 2)
@@ -71,17 +81,32 @@ const Converter = () => {
             {currentRate}
           </div>
           <label className="flex gap-4 items-center">
-            <input
-              className="text-black px-3 py-1"
-              value={currentValue}
-              onChange={(e) => handleChangeCurrentValue(e.target.value)}
-            />
-            EUR
+            <div className="flex flex-1 gap-2 items-center">
+              <input
+                className={"text-black px-3 py-1"}
+                value={currentValue}
+                onChange={(e) => handleChangeCurrentValue(e.target.value)}
+              />
+              <div>{isUsdToEur ? "USD" : "EUR"}</div>
+            </div>
             <div className="flex gap-3 items-center font-semibold">
               <FontAwesomeIcon icon={faArrowRightLong} />
-              <span>{convertedValue.replace(".", ",")} USD</span>
+            </div>
+            <div className="flex-1">
+              <span>
+                {convertedValue.replace(".", ",")}{" "}
+                <span>{isUsdToEur ? "EUR" : "USD"}</span>
+              </span>
             </div>
           </label>
+          <div className="text-center mt-4">
+            <Switch
+              checked={isUsdToEur}
+              setActive={(newIsUsdToEur) =>
+                handleSwitchUsdToEur(newIsUsdToEur, convertedValue)
+              }
+            />
+          </div>
         </div>
       </Container>
       <Container label="History" className={"flex-2"}>
