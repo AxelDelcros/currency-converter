@@ -3,6 +3,7 @@ import { HistoryProps } from "./History.types"
 import {
   faArrowTrendDown,
   faArrowTrendUp,
+  faEquals,
 } from "@fortawesome/free-solid-svg-icons"
 
 import Container from "../../atoms/Container/Container"
@@ -40,7 +41,10 @@ const History = ({ values = [], className }: HistoryProps) => {
                     <td className="py-2 ">
                       <div className="flex gap-2 justify-center items-center">
                         {realRate.toFixed(2).toString().replace(".", ",")}
-                        {nextValue && (
+                        {nextValue && nextValue === realRate && (
+                          <FontAwesomeIcon icon={faEquals} />
+                        )}
+                        {nextValue && nextValue !== realRate && (
                           <FontAwesomeIcon
                             className={
                               realRate < nextValue
