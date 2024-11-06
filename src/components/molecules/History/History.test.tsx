@@ -24,7 +24,7 @@ const values = [
   },
   {
     id: "mocked-id-2",
-    realRate: 1.3,
+    realRate: 1.1,
     valueEur: 1.5,
     valueUsd: 1.8,
   },
